@@ -1,87 +1,49 @@
-//TODO - Your ES6 JavaScript code (if any) goes here
+import "bootstrap"
 
+import { movies } from './movies'
 
+for(let m of movies){
+    let m_thumb = document.getElementById('m' + m.id)
+    m_thumb.innerHTML = `
+        <img src="${m.picture}" alt="${m.title}" class="img-thumnail" style="width:180px; height:270px;" />
+    `
 
-function getMax(x,y,z){
-    if (x >=y && x>=z){
-        return x;
-    }
-    else if (y>=x && y>=z){
-        return y;
-    }
-    else{
-        return z;
-    }
-}    
-
-function getMin(x,y,z){
-    if (x <=y && x<=z){
-        return x;
-    }
-    else if (y<=x && y<=z){
-        return y;
-    }
-    else{
-        return z;
-    }
-}    
-
-function getMean(x,y,z){
-    return (x+y+z)/3;
-}
-
-function compare(word1,word2)
-{
-    if(word1 == word2){
-        return 0;
-    }
-    else if (word1 > word2){
-        return 1;
-    }
-    else{
-        return -1;
+    m_thumb.onclick = function(){
+        displayMovie(m)
     }
 }
 
-function getCharPerLine(str,indent)
-{
-    let woobidigoshish = "";
-        for(let i = 0;i<str.length;i++)
-        {
-            
-            if(str[i] != " ")
-            {
-                if(indent)
-            {
-                for(let j = 0; j<=i;j++)
-                {
-                    woobidigoshish += " ";
-                }
-            }
-                woobidigoshish += str[i] + '\n';
-            }
+let featuredMovie = document.querySelector(".featured")
+function displayMovie(movie){
+    featuredMovie.innerHTML = `
+        <div class="card">
+            <div class="card-header">${movie.title}</div>
+            <img src="${movie.picture}" class="card-img-top" alt="${movie.title}">
+            <div class="card-body">
+                <p class="card-text">${movie.description}</p>
+            </div>
+        </div>
+    `
+}
+
+function searchMovies(event){
+    event.preventDefault()
+
+    let input = document.querySelector('[type="search"]').value || ""
+    let count = 0
+    for(let m of movies){
+        if(m.title.toUpperCase().indexOf(input.toUpperCase()) == -1){
+            document.querySelector(`#m${m.id}`).classList.add('d-none')
         }
-    return woobidigoshish;
+        else{
+            document.querySelector(`#m${m.id}`).classList.remove('d-none')
+            count++
+        }
+    }
+
+    featuredMovie.innerHTML = count == 0 ? 'Nothing was found' : ''
 }
 
-function arrow(size)
-{
-    let woobidigoshish="";
-    for(let i = 1; i<= size; i++)
-    {
-        for(let j=1;j<=i;j++)
-        {
-            woobidigoshish+="*";
-        }
-        woobidigoshish += "\n";
-    }
-    for(let h=size-1; h>0 ;h--)
-        {
-            for(let k = 1; k<=h; k++)
-            {
-                woobidigoshish+="*";
-            }
-            woobidigoshish += '\n';
-        }
-    return woobidigoshish;
-}
+document.querySelector("button").onclick = searchMovies
+document.querySelector('[type="search"]').onsearch = searchMovies
+document.querySelector("form").onsubmit = searchMovies
